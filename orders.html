@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders - Riya Fashion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Fixed Header Styles */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: #3fc233;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .company-name {
+            color: white;
+            font-size: 2em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header input[type="date"] {
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        /* Main Content Styles */
+        .container {
+            margin-top: 80px; /* Adjusted for fixed header */
+            padding: 20px;
+            overflow-x: auto; /* Enable horizontal scrolling for small screens */
+        }
+
+        .order-table {
+            width: 100%;
+            min-width: 600px; /* Minimum width for the table */
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .order-table th,
+        .order-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .order-table th {
+            background-color: #3fc233;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .order-table tr:hover {
+            background-color: #f8f8f8;
+        }
+
+        .order-table .actions {
+            white-space: nowrap;
+        }
+
+        .order-table .actions button {
+            margin: 0 5px;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: opacity 0.3s ease;
+        }
+
+        .order-table .edit-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .order-table .delete-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .order-table .freeze-btn {
+            background-color: #ffa500;
+            color: white;
+        }
+
+        .order-table .edit-btn:hover,
+        .order-table .delete-btn:hover,
+        .order-table .freeze-btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Blurred Row Style */
+        .blurred-row {
+            opacity: 0.5;
+            background-color: #3fc23359;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #3fc233;
+        }
+
+        .modal-content .form-group {
+            margin-bottom: 15px;
+        }
+
+        .modal-content label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .modal-content button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: opacity 0.3s ease;
+        } 
+        .modal-content .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .modal-content .cancel-btn {
+            background-color: #f44336;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .modal-content button:hover {
+            opacity: 0.8;
+        }
+
+        /* Total Row Styles */
+        .total-row {
+            background-color: #f1f1f1;
+            font-weight: bold;
+        }
+
+        .total-row td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        /* Responsive Design for Phones */
+        @media (max-width: 600px) {
+            .header {
+                padding: 15px;
+            }
+
+            .company-name {
+                font-size: 1.5em; /* Smaller font size for header */
+            }
+
+            .header input[type="date"] {
+                font-size: 0.9em; /* Smaller font size for date input */
+                padding: 6px;
+            }
+
+            .container {
+                margin-top: 100px; /* Reduce margin for smaller screens */
+                padding: 10px; /* Reduce padding */
+            }
+
+            .order-table th,
+            .order-table td {
+                padding: 8px 10px; /* Reduce padding for table cells */
+                font-size: 0.9em; /* Smaller font size for table content */
+            }
+
+            .order-table .actions button {
+                padding: 4px 8px; /* Smaller padding for buttons */
+                font-size: 0.8em; /* Smaller font size for buttons */
+                margin: 0 3px; /* Reduce margin between buttons */
+            }
+
+            .modal-content {
+                padding: 15px; /* Reduce padding for modal */
+                max-width: 90%; /* Make modal smaller for phones */
+            }
+
+            .modal-content h2 {
+                font-size: 1.2em; /* Smaller font size for modal title */
+            }
+
+            .modal-content input {
+                padding: 6px; /* Smaller padding for inputs */
+                font-size: 0.9em; /* Smaller font size for inputs */
+            }
+
+            .modal-content button {
+                padding: 6px 12px; /* Smaller padding for buttons */
+                font-size: 0.8em; /* Smaller font size for buttons */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1 class="company-name">Riya Fashion(Deco)</h1>
+        <input type="date" id="dateFilter" onchange="filterOrdersByDate()">
+    </header>
+
+    <div class="container">
+        <table class="order-table" id="orderTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Quantity</th>
+                    <th>Rate</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="orderTableBody">
+                <!-- Orders will be dynamically inserted here -->
+            </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td><strong>Final Data</strong></td>
+                    <td id="totalQuantity">0</td>
+                    <td></td>
+                    <td id="grandTotal">Rs. 0.00</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h2>Edit Order</h2>
+            <form id="editForm">
+                <div class="form-group">
+                    <label for="editQuantity">Quantity:</label>
+                    <input type="number" id="editQuantity" required>
+                </div>
+                <div class="form-group">
+                    <label for="editDate">Date:</label>
+                    <input type="date" id="editDate">
+                </div>
+                <button type="submit" class="submit-btn">Save Changes</button>
+                <button type="button" class="cancel-btn" onclick="closeEditModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentOrderId = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrders();
+        });
+
+        function loadOrders(filterDate = null) {
+            const orders = JSON.parse(localStorage.getItem('riyaFashionOrders')) || [];
+            const orderTableBody = document.getElementById('orderTableBody');
+            const rate = 1.60; // Fixed rate
+            let grandTotal = 0;
+            let totalQuantity = 0;
+
+            // Clear existing rows
+            orderTableBody.innerHTML = '';
+
+            orders.forEach(order => {
+                // Skip if the order doesn't match the filter date
+                if (filterDate && order.date !== filterDate) return;
+
+                const row = document.createElement('tr');
+                const total = (order.quantity * rate).toFixed(2); // Calculate total
+
+                // Check if the order is frozen
+                if (order.frozen) {
+                    row.classList.add('blurred-row');
+                } else {
+                    grandTotal += parseFloat(total); // Add to grand total
+                    totalQuantity += parseInt(order.quantity); // Add to total quantity
+                }
+
+                row.innerHTML = `
+                    <td>${order.date}</td>
+                    <td>${order.quantity}</td>
+                    <td>Rs. ${rate.toFixed(2)}</td>
+                    <td>Rs. ${total}</td>
+                    <td class="actions">
+                        <button class="edit-btn" onclick="openEditModal('${order.id}')">Edit</button>
+                        <button class="delete-btn" onclick="deleteOrder('${order.id}')">Delete</button>
+                        <button class="freeze-btn" onclick="freezeOrder('${order.id}', this)" ${order.frozen ? 'disabled' : ''}>Data Freeze</button>
+                    </td>
+                `;
+
+                orderTableBody.appendChild(row);
+            });
+
+            // Display total quantity and grand total
+            document.getElementById('totalQuantity').textContent = totalQuantity;
+            document.getElementById('grandTotal').textContent = `Rs. ${grandTotal.toFixed(2)}`;
+        }
+
+        function filterOrdersByDate() {
+            const filterDate = document.getElementById('dateFilter').value;
+            loadOrders(filterDate);
+        }
+
+        function openEditModal(orderId) {
+            const orders = JSON.parse(localStorage.getItem('riyaFashionOrders')) || [];
+            const order = orders.find(o => o.id === orderId);
+
+            if (order) {
+                currentOrderId = orderId;
+                document.getElementById('editQuantity').value = order.quantity;
+                document.getElementById('editDate').value = order.date;
+                document.getElementById('editModal').style.display = 'flex';
+            }
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const quantity = document.getElementById('editQuantity').value;
+            const date = document.getElementById('editDate').value;
+
+            if (quantity <= 0 || isNaN(quantity)) {
+                alert('Please enter a valid quantity (must be a positive number).');
+                return;
+            }
+
+            const orders = JSON.parse(localStorage.getItem('riyaFashionOrders')) || [];
+            const orderIndex = orders.findIndex(order => order.id === currentOrderId);
+
+            if (orderIndex !== -1) {
+                orders[orderIndex] = {
+                    id: currentOrderId,
+                    quantity: quantity,
+                    date: date || new Date().toISOString().split('T')[0],
+                    frozen: orders[orderIndex].frozen || false // Preserve frozen state
+                };
+                localStorage.setItem('riyaFashionOrders', JSON.stringify(orders));
+                location.reload();
+            }
+        });
+
+        function deleteOrder(orderId) {
+            if (!confirm('Are you sure you want to delete this order?')) return;
+            
+            const orders = JSON.parse(localStorage.getItem('riyaFashionOrders')) || [];
+            const updatedOrders = orders.filter(order => order.id !== orderId);
+            localStorage.setItem('riyaFashionOrders', JSON.stringify(updatedOrders));
+            location.reload();
+        }
+
+        function freezeOrder(orderId, button) {
+            const orders = JSON.parse(localStorage.getItem('riyaFashionOrders')) || [];
+            const orderIndex = orders.findIndex(order => order.id === orderId);
+
+            if (orderIndex !== -1) {
+                // Mark the order as frozen
+                orders[orderIndex].frozen = true;
+                localStorage.setItem('riyaFashionOrders', JSON.stringify(orders));
+
+                // Blur the row and disable the freeze button
+                const row = button.closest('tr');
+                row.classList.add('blurred-row');
+                button.disabled = true;
+
+                // Recalculate Final Data
+                const rate = 1.60;
+                let grandTotal = 0;
+                let totalQuantity = 0;
+
+                orders.forEach(order => {
+                    if (!order.frozen) {
+                        const total = (order.quantity * rate).toFixed(2);
+                        grandTotal += parseFloat(total);
+                        totalQuantity += parseInt(order.quantity);
+                    }
+                });
+
+                // Update Final Data
+                document.getElementById('totalQuantity').textContent = totalQuantity;
+                document.getElementById('grandTotal').textContent = `Rs. ${grandTotal.toFixed(2)}`;
+            }
+        }
+
+        // Close modal when clicking outside of it
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        });
+    </script>
+</body>
+</html>

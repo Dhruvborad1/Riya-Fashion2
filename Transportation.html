@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion Hub - Saree Order</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .custom-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: #d2691e;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .custom-header h1 {
+            color: white;
+            font-size: 2em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .order-wrapper {
+            margin-top: 120px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .custom-form {
+            background-color: #f8f8f8;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            animation: slideIn 1s ease-out;
+        }
+
+        .custom-form-section {
+            margin-bottom: 25px;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .custom-form-section label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .custom-form-section input[type="number"],
+        .custom-form-section input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .custom-form-section input[type="number"]:focus,
+        .custom-form-section input[type="date"]:focus {
+            border-color: #d2691e;
+            outline: none;
+        }
+
+        .submit-btn {
+            background-color: #d2691e;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;            
+            transition: background-color 0.3s ease;
+            width: 100%;
+            animation: fadeIn 2s ease-out;
+        }
+
+        .submit-btn:hover {
+            background-color: #a0522d;
+        }
+
+        .View-btn {
+            background-color: #d2691e;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;            
+            transition: background-color 0.3s ease;
+            font-size: 1.1em;
+            width: 100%;
+            animation: fadeIn 2s ease-out;
+            text-align: center;
+        }
+
+        .View-btn:hover {
+            background-color: #a0522d;
+        }
+
+
+                /* Responsive Design */
+                @media (max-width: 600px) {
+                    .custom-header h1 {
+                        font-size: 1.6em;
+                        padding: 15px;
+                    }
+        
+                    .order-wrapper {
+                        margin-top: 170px;
+                        padding: 10px;
+                    }
+        
+                    .custom-form {
+                        padding: 15px;
+                        max-width: 100%;
+                    }
+        
+                    .custom-form-section label {
+                        font-size: 0.9em;
+                    }
+        
+                    .custom-form-section input {
+                        padding: 8px;
+                        font-size: 0.9em;
+                    }
+        
+                    .submit-btn {
+                        padding: 10px;
+                        font-size: 0.9em;
+                    }
+        
+                    .View-btn{
+                        padding: 10px;
+                        font-size: 0.9em;
+                    }
+                }
+        
+                /* Larger Mobile / Small Tablets */
+                @media (max-width: 768px) {
+                    .custom-header h1 {
+                        font-size: 1.8em;
+                        padding: 18px;
+                    }
+        
+                    .custom-form {
+                        padding: 18px;
+                        max-width: 90%;
+                    }
+        
+                    .custom-form-section label {
+                        font-size: 1em;
+                    }
+        
+                    .custom-form-section input {
+                        padding: 9px;
+                        font-size: 1em;
+                    }
+        
+                    .submit-btn {
+                        padding: 11px;
+                        font-size: 1em;
+                    }
+        
+                    .View-btn {
+                        padding: 11px;
+                        font-size: 1em;
+                    }
+                }
+        
+
+         /* Animation for form entry */
+         @keyframes formEntry {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .custom-form {
+            animation: formEntry 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <header class="custom-header">
+        <h1>Riya Fashion(Transportation)</h1>
+    </header>
+
+    <div class="order-wrapper">
+        <form class="custom-form" id="newOrderForm" onsubmit="return handleFormSubmit()">
+            <div class="custom-form-section">
+                <label for="sareeAmount">Saree Quantity:</label>
+                <input type="number" id="sareeAmount" name="sareeAmount" min="1" required>
+            </div>
+
+            <div class="custom-form-section">
+                <label for="price">Rate (per saree):</label>
+                <input type="number" id="price" name="price" min="0.01" step="0.01" required>
+            </div>
+
+            <div class="custom-form-section">
+                <label for="purchaseDate">Order Date:</label>
+                <input type="date" id="purchaseDate" name="purchaseDate">
+            </div>
+
+            <button type="submit" class="submit-btn">Submit</button>
+            <br><br>
+            <a href="Transportationdeta.html"><div class="View-btn">View</div></a>
+
+        </form>
+    </div>
+
+    <script>
+        function handleFormSubmit() {
+            const qty = document.getElementById('sareeAmount').value;
+            const rate = document.getElementById('price').value;
+            let date = document.getElementById('purchaseDate').value;
+
+            if (qty <= 0 || isNaN(qty)) {
+                alert('Enter a valid quantity.');
+                return false;
+            }
+
+            if (rate <= 0 || isNaN(rate)) {
+                alert('Enter a valid rate.');
+                return false;
+            }
+
+            if (!date) {
+                date = new Date().toISOString().split('T')[0];
+            }
+
+            const newOrder = {
+                id: Date.now().toString(),
+                quantity: qty,
+                rate: rate,
+                date: date
+            };
+
+            const orderList = JSON.parse(localStorage.getItem('customThreadOrders')) || [];
+            orderList.push(newOrder);
+            localStorage.setItem('customThreadOrders', JSON.stringify(orderList));
+
+            window.location.href = 'Transportationdeta.html';
+            return false;
+        }
+
+        document.getElementById('purchaseDate').min = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
+
